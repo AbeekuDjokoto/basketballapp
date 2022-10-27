@@ -10,11 +10,11 @@
 }
 
 body{
-  background: #1B244A;
+  background: #fff;
 }
 
 #app {
-  font-family: 'Silkscreen', cursive;
+  font-family: 'Roboto', sans-serif;
 }
 
 </style>
