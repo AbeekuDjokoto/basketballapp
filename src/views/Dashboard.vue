@@ -1,66 +1,94 @@
 <template>
-  <a
-    class="btn btn-primary mb-5"
-    data-bs-toggle="offcanvas"
-    href="#offcanvasExample"
-    role="button"
-    aria-controls="offcanvasExample"
-    @click="getPatient"
-  >
-    Toggle User Info
-  </a>
- 
-  <table class="table mt-5 caption-top">
-    <caption style="border: inherit; background-color: lightgrey">
-      <span class="text-center text-uppercase"
-        ><strong>Blood Glucouse Log Sheet/Quantities of food</strong></span
+  <div class="container-fluid ">
+    <div class="row">
+      <div
+        class="sidebar col-lg-4 col-md-4 bg-success"
+        style="height: 100vh"
       >
-    </caption>
-    <thead>
-      <tr>
-        <th scope="col">Number</th>
-        <th scope="col">Fasting Blood Glucose</th>
-        <th scope="col">Breakfast + Quantities</th>
-        <th scope="col">2 hours Breakfast</th>
-        <th scope="col">Lunch Quantities</th>
-        <th scope="col">2 hours after lunch</th>
-        <th scope="col">Supposed Quantities</th>
-        <th scope="col">2 hours after supper</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(person, index) in personDetails" :key="person">
-        <td>{{ index + 1 }}</td>
-        <td>{{ person.fasting }}</td>
-        <td>{{ person.breakfast }}</td>
-        <td>{{ person.break }}</td>
-        <td>{{ person.lunch }}</td>
-        <td>{{ person.afterLunch }}</td>
-        <td>{{ person.quantities }}</td>
-        <td>{{ person.supper }}</td>
-      </tr>
-    </tbody>
-  </table>
+      <div class="justify-content-start align-items-center d-flex mt-2">
+        <span class="material-symbols-outlined"> dashboard </span>
+        <span class="fw-light">Dashboard</span>
+      </div>
+        
+        <h1 class="fw-light mb-5 mt-3">Welcome {{ doctorName }}</h1>
+        <div class="d-grid gap-2 col-6 mx-auto">
+         <router-link to="/"><button class="btn btn-outline-dark mt-5" style= "width: 100%" type="button">Log out</button></router-link> 
+        </div>
+      </div>
 
-  <div
-    class="offcanvas offcanvas-start"
-    tabindex="-1"
-    id="offcanvasExample"
-    aria-labelledby="offcanvasExampleLabel"
-  >
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-        {{ personDetails.name }}
-      </h5>
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="offcanvas"
-        aria-label="Close"
-      ></button>
-    </div>
-    <div class="offcanvas-body">
-      <div>This is the profile of the patient</div>
+      <div class="col-md-8 col-lg-8" >
+        <table class="table mt-5 mx-2 caption-top" style="width: 100%" v-if="patientStatus == true">
+          <caption style="border: inherit; background-color: lightgrey">
+            <span class="text-center text-uppercase"
+              ><strong
+                >Blood Glucouse Log Sheet/Quantities of food</strong
+              ></span
+            >
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Number</th>
+              <th scope="col">Breakfast Quant</th>
+              <th scope="col">2 hours Breakfast</th>
+              <th scope="col">Lunch Quant</th>
+              <th scope="col">2 hours after lunch</th>
+              <th scope="col">Supposed Quant</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(person, index) in returnfiltered" :key="person">
+              <td>{{ index + 1 }}</td>
+              <td>{{ person.breakfast }}</td>
+              <td>{{ person.break }}</td>
+              <td>{{ person.lunch }}</td>
+              <td>{{ person.afterLunch }}</td>
+              <td>{{ person.quantities }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div v-else>
+          <h1 class="font-monospace d-flex">
+            Patient Information
+          </h1>
+
+          <div
+            class="card"
+            style="width: 22rem"
+            v-if="doctorStatus == true"
+          >
+            <img
+              src="../assets/PatientCare.svg.png"
+              class="card-img-top"
+              alt="..."
+            />
+            <div class="card-body">
+              <h5 class="card-title fw-bold">Patient Information</h5>
+              <p class="card-text font-monospace">Fact check</p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li
+                class="list-group-item font-monospace"
+                style="
+                  background: linear-gradient(
+                    246.26deg,
+                    #585dfe 0%,
+                    #fb3796 100%
+                  );
+                "
+              >
+                Total Number of Patients: {{ personDetails.length }}
+              </li>
+              <li class="list-group-item font-monospace">
+                Patient's attended to: {{ attendedTo.length }}
+              </li>
+              <li class="list-group-item font-monospace">
+                Patient's unatended to: {{ notAttendedTo.length }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -69,10 +97,13 @@
 export default {
   data() {
     return {
-        personName: null,
+      doctorName: "",
+      personName: null,
+      patientStatus: false,
+      doctorStatus: false,
       personDetails: [
         {
-          name: null,
+          name: "Abeeku",
           fasting: "true",
           breakfast: "indomie, 250mg",
           break: "timeout",
@@ -80,9 +111,10 @@ export default {
           afterLunch: "tea",
           quantities: "30mg",
           supper: "tea",
+          attendedTo: true,
         },
         {
-          name: null,
+          name: "Winnifred",
           fasting: "false",
           breakfast: "rice, 50mg",
           break: "timeout",
@@ -90,9 +122,10 @@ export default {
           afterLunch: "tea",
           quantities: "20mg",
           supper: "oats",
+          attendedTo: true,
         },
         {
-          name: null,
+          name: "fred",
           fasting: "true",
           breakfast: "banku, 20mg",
           break: "timeout",
@@ -100,9 +133,10 @@ export default {
           afterLunch: "tea",
           quantities: "50mg",
           supper: "coffee",
+          attendedTo: false,
         },
         {
-          name: null,
+          name: "kwabena",
           fasting: "false",
           breakfast: "indomie, 80mg",
           break: "timeout",
@@ -110,9 +144,10 @@ export default {
           afterLunch: "",
           quantities: "10mg",
           supper: "bread and egg",
+          attendedTo: false,
         },
         {
-          name: null,
+          name: "charles",
           fasting: "true",
           breakfast: "kenkey, 10mg",
           break: "timeout",
@@ -120,9 +155,10 @@ export default {
           afterLunch: "tea",
           quantities: "550mg",
           supper: "tea",
+          attendedTo: true,
         },
         {
-          name: null,
+          name: "alex",
           fasting: "true",
           breakfast: "indomie, 90mg",
           break: "timeout",
@@ -130,9 +166,10 @@ export default {
           afterLunch: "",
           quantities: "550mg",
           supper: "tea",
+          attendedTo: true,
         },
         {
-          name: null,
+          name: "george",
           fasting: "false",
           breakfast: "jollof, 50mg",
           break: "timeout",
@@ -140,9 +177,10 @@ export default {
           afterLunch: "",
           quantities: "550mg",
           supper: "bread and egg",
+          attendedTo: false,
         },
         {
-          name: null,
+          name: "anderson",
           fasting: "true",
           breakfast: "indomie, 230mg",
           break: "timeout",
@@ -152,7 +190,7 @@ export default {
           supper: "sausage",
         },
         {
-          name: null,
+          name: "prince",
           fasting: "true",
           breakfast: "ice kenkey, 50mg",
           break: "timeout",
@@ -160,32 +198,62 @@ export default {
           afterLunch: "",
           quantities: "50mg",
           supper: "coffee",
+          attendedTo: true,
         },
       ],
     };
   },
+  created() {
+    this.check();
+  },
   computed: {
-    check(){
-        this.personName = localStorage.getItem("patientName")
-        console.log(this.personName)
-        return this.personName
-    }
+    returnfiltered() {
+      return this.personDetails.filter((name) => {
+        return name.name === localStorage.getItem("patientName");
+      });
+    },
+    attendedTo() {
+      return this.personDetails.filter((person) => {
+        return person.attendedTo === true;
+      });
+    },
+    notAttendedTo() {
+      return this.personDetails.filter((person) => {
+        return person.attendedTo === false;
+      });
+    },
   },
   methods: {
     getPatient() {
-      if (localStorage["patientName"] == undefined) {
-        console.log(localStorage.getItem("patientName"));
-      } else if (localStorage["doctorName"] == undefined) {
-        console.log(localStorage.getItem("doctorName"));
-      } else if (localStorage["patientName"]) {
+      if (localStorage["patientName"]) {
         this.personDetails.name = localStorage.getItem("patientName");
-        return this.personDetails.name;
-      } else if (localStorage["doctorName"]) {
-        this.personDetails.name = localStorage.getItem("doctorName");
-        return this.personDetails.name;
+        console.log(this.personDetails.name);
+        // return this.personDetails.name;
+      } else {
+        this.doctorName = localStorage.getItem("doctorName");
+        console.log(this.doctorName);
+        // return this.personDetails.name;
       }
 
       console.log(this.personDetails.name);
+    },
+    check() {
+      if (localStorage["patientName"]) {
+        this.doctorName = localStorage.getItem("patientName");
+        this.patientStatus = true;
+      } else {
+        this.doctorName = localStorage.getItem("doctorName");
+        this.doctorStatus = true;
+        this.patientStatus = false;
+      }
+    },
+    doctorInfo() {
+      if (localStorage["patientName"]) {
+        this.patientStatus = true;
+      } else {
+        this.patientStatus = false;
+      }
+      this.personDetails;
     },
   },
 };

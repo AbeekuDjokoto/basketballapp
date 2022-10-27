@@ -1,4 +1,11 @@
 <template>
+  <h1 v-if="error" style="font-size: 20px" class="text-center fw-bold bg-danger text-white">
+    {{error}}
+  </h1>
+  <h1 v-if="error == false" style="font-size: 20px" class="text-center fw-bold bg-success text-white">
+    {{error}}
+  </h1>
+
   <div class="container mt-5">
     <div class="row justify-content-md-center">
       <div class="col-md-auto mt-5 login-container rounded">
@@ -57,7 +64,7 @@
               type="button"
               @click.enter="validate"
             >
-              Button
+              Login
             </button>
           </div>
         </form>
@@ -73,18 +80,31 @@ export default {
       username: "",
       password: "",
       removelines: "patient",
+      error: null
     };
   },
   methods: {
     validate() {
-      if(this.removelines === "patient"){
+      if(this.username.trim() === ""){
+        this.error = "please enter a valid username"
+        return this.error
+      } else if (this.password < 4){
+        this.error = "password should be more than 4 characters"
+        return this.error
+      } 
+      
+      if (this.removelines === "patient"){
         localStorage.setItem("patientName", this.username);
         localStorage.setItem("patientStatus", this.removelines);
         console.log(this.removelines)
+        localStorage.removeItem("doctorName")
+        localStorage.removeItem("doctorStatus")
         this.$router.push("/dashboard")
-      } else{
+      } else {
         localStorage.setItem("doctorName", this.username);
         localStorage.setItem("doctorStatus", this.removelines);
+        localStorage.removeItem("patientName")
+        localStorage.removeItem("patientStatus")
         this.$router.push("/dashboard")
         console.log(this.removelines)
       }
